@@ -217,6 +217,11 @@ def check_irods_config(ienv: Union[Path, dict], include_network = True) -> str:
         return 'Please set an "irods_default_resource".'
     if not isinstance(env["irods_port"], int):
         return '"irods_port" needs to be an integer, remove quotes.'
+    if "connection_timeout" in env:
+        if not isinstance(env["connection_timeout"], int):
+            return '"connection_timeout" must be integer.'
+        elif env["connection_timeout"] > 9208512000:
+            return '"connection_timeout too high. Max is 9208512000 (= 292 years)."'
     if include_network:
         if not Session.network_check(env["irods_host"], env["irods_port"]):
             return f'No connection: Network might be down or\n \
